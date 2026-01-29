@@ -1,0 +1,21 @@
+{
+    "idPedido":1,
+    "idCliente":2,
+    "lineas":[
+        {
+            "linea1":{
+                "sku":"432545e",
+                "nombre":"Buscas",
+                "cantidad":12,
+                "precio":50.45}},
+        {
+            "linea2":{
+                "sku":"446151f",
+                "nombre":"Chromecast",
+                "cantidad":1,
+                "precio":60.5}
+
+        }
+    ],
+    "estado":"tramitación"
+}

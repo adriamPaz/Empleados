@@ -1,0 +1,76 @@
+db.domotica.insertMany([
+    {
+        "sensorId":"1",
+        "ts": new Date(2023,3,9),
+        "tipo":"temp",
+        "valor":3,
+        "ubicacion":"Plaza Berlin 3"
+    },{
+        "sensorId":"3",
+        "ts":new Date(2024,7,1),
+        "tipo":"hum",
+        "valor":5,
+        "ubicacion":"Calle Monaco 7"
+    },{
+        "sensorId":"4",
+        "ts":new Date(2025,9,9),
+        "tipo":"temp",
+        "valor":1,
+        "ubicacion":"Avenida Berna 14"
+    }
+])
+
+
+
+db.domotica.find(
+  {
+    "ts": {
+      $gte: new Date(new Date().setDate(new Date().getDate() - 1)),
+      $lt: new Date()
+    }
+  },
+  {
+    "ts": 1,
+    "sensordId": 1,
+    "_id": 0
+  }
+)
+
+
+db.domotica.find(
+    {
+
+    }
+)
+
+db.domotica.updateMany(
+    {
+        
+    }
+)
+
+db.mediciones.deleteMany({
+  "ts": { $lt: new Date(2024, 1, 1) }
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+db.domotica.deleteMany({
+  "ts": { $lt: new Date(2024, 1, 1) }
+})

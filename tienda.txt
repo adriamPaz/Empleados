@@ -1,0 +1,158 @@
+db.createCollection("clientes")
+
+db.clientes.insertMany([
+    {
+    "idCliente":1,
+    "nombre":"Marcos",
+    "emails":[
+        "marco@gmail.com",
+        "marcquitos12@protonmail.com"
+    ],
+    "direcciones":{
+        "direccion1":"Plaza del Toro 6",
+        "direccion2":"Calle Viena 12"
+    }
+    },{
+        "idCliente":2,
+    "nombre":"Marta",
+    "emails":[
+        "marta007@gmail.com",
+        "martita12@protonmail.com"
+    ],
+    "direcciones":{
+        "direccion1":"Plaza del Miedo 9",
+        "direccion2":"Calle Roma 28"
+    }
+    }
+])
+
+db.pedidos.insertMany(
+    [
+        {
+            "idPedido":1,
+            "idCliente":2,
+            "fecha":new Date(),
+            "lineas":[
+                {
+                    "linea1":{
+                        "sku":"432545e",
+                        "nombre":"Buscas",
+                        "cantidad":12,
+                        "precio":50.45}},
+                {
+                    "linea2":{
+                        "sku":"446151f",
+                        "nombre":"Chromecast",
+                        "cantidad":1,
+                        "precio":60.5}
+
+                }
+            ],
+            "estado":"tramitacion"
+        },
+        {
+            "idPedido":2,
+            "idCliente":1,
+            "fecha":new Date().getDate()-3,
+            "lineas":[
+                {
+                    "linea1":{
+                        "sku":"545454j",
+                        "nombre":"Maiz",
+                        "cantidad":12,
+                        "precio":20.45}}
+            ],
+            "estado":"envio"
+        },
+        {
+            "idPedido":3,
+            "idCliente":2,
+            "fecha":new Date().getDate()-6,
+            "lineas":[
+                {
+                    "linea1":{
+                        "sku":"87165e",
+                        "nombre":"Queso",
+                        "cantidad":12,
+                        "precio":50.45}},
+                {
+                    "linea2":{
+                        "sku":"447178l",
+                        "nombre":"Chromecast",
+                        "cantidad":1,
+                        "precio":60.5}
+
+                }
+            ],
+            "estado":"tramitación"
+        }
+    ]
+)
+
+db.pedidos.find({"idCliente":1})
+
+
+
+
+//teacher 1  //defines los datos que pides //condiciones
+db.pedidos.aggregate([
+    {
+        $project:{ 
+            _id:0,
+            idPedido:1,
+            idCliente:1,
+            fecha:1,
+            estado:1,
+            cantidad:{$sum:{"lineas.cantidad"}}
+        }
+    },
+    {
+        $match:{ 
+            cantidadTotal:{$gt:100}
+        }
+    }
+])
+
+
+//teacher 2  ENSEÑA LAS LINEAS SUPERIORES A 100
+db.pedidos.aggregate([
+    {$unwind: "$lineas"},
+    {$match:{"$lineas.cantidad": { $gt:100}}},
+    {$project:{
+        _id:0,
+        idPedido:1,
+        idCliente:1,
+        fecha:1,
+        estado:1,
+        linea:"$lineas"
+    }}
+])
+
+
+
+//juli
+db.pedidos.aggregate([
+{$unwind: "$lineas"},
+{$group: {
+_id:"$idPedido",
+idCliente: {$first: "$idCliente"},
+totalCantidad: {$sum:"$lineas.cantidad"}}
+},
+{$match: {totalCantidad: {$gt: 100}}}
+])
+
+
+//berto
+
+//yo
+db.pedidos.find({$expr:{$gt:[{$sum:{"$lineas.cantidad"},100]}}
+
+
+db.pedidos.updateOne({"idPedido":1},{$set:{"estado":"recibido"}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
