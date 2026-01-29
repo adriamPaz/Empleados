@@ -11,12 +11,15 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.InsertOneResult;
+import com.mongodb.client.result.UpdateResult;
 
 public class EmpleadoCRUD {
-        
+    MongoProvider provi = new MongoProvider();
 
     public void insertarEmpleado(Empleado emp){
-        try (MongoProvider provi = new MongoProvider();) {
+        try {
             Document doc = new Document();
             doc.append("Emp_no", emp.getNumEmp());
             doc.append("nombre", emp.getNombre());
@@ -26,9 +29,10 @@ public class EmpleadoCRUD {
             doc.append("oficio", emp.getOficio());
             doc.append("comision", emp.getComision());
 
-            provi.empleados().insertOne(doc);
+            InsertOneResult insert = provi.empleados().insertOne(doc);
+            System.out.println(insert.getInsertedId());
         } catch (Exception e) {
-            // TODO: handle exception
+            System.out.println(e.getMessage());
         }
     }
 
@@ -40,108 +44,125 @@ public class EmpleadoCRUD {
 
 
     public void deleteEmpleado(Empleado emp){
-        try (MongoProvider provi = MongoProvider.getInstance()) {
-            provi.empleados().deleteOne(new Document("nombre", emp.getNombre()));
+        try  {
+            DeleteResult deleted = provi.empleados().deleteOne(new Document("nombre", emp.getNombre()));
+            System.out.println(deleted.getDeletedCount());
         } catch (Exception e) {
-            // TODO: handle exception
+            System.out.println(e.getMessage());
         }
     }
 
     public void deleteEmpleado(String nombre){
-        try (MongoProvider provi = MongoProvider.getInstance()) {
-            provi.empleados().deleteOne(new Document("nombre", nombre));
+        try  {
+            DeleteResult deleted = provi.empleados().deleteOne(new Document("nombre", nombre));
+            System.out.println(deleted.getDeletedCount());
         } catch (Exception e) {
-            // TODO: handle exception
+            System.out.println(e.getMessage());
         }
     }
 
     public void deleteEmpleado(int empNum){
-        try (MongoProvider provi = MongoProvider.getInstance()) {
-            provi.empleados().deleteOne(new Document("Emp_no", empNum));
+        try  {
+            DeleteResult del = provi.empleados().deleteOne(new Document("Emp_no", empNum));
+            System.out.println(del.getDeletedCount());
         } catch (Exception e) {
-            // TODO: handle exception
+            System.out.println(e.getMessage());
         }
     }
 
     public void increaseEmpleadoSalario(Empleado emp,int increase){
-        try (MongoProvider provider = new MongoProvider()) {
+        try  {
             Bson filtro1 = Filters.eq("nombre",emp.getNombre());
             Bson update = Updates.inc("salario",increase);
-            provider.empleados().updateOne(filtro1, update);
+            UpdateResult updated = provi.empleados().updateOne(filtro1, update);
+            System.out.println(updated.getModifiedCount());
+            
         } catch (Exception e) {
-            // TODO: handle exception
+            System.out.println(e.getMessage());
         }
     }
 
     public void increaseOficioSalario(int extra, String oficio){
-        try (MongoProvider pr = new MongoProvider()) {
+        try  {
             Bson filtro = Filters.eq("oficio",oficio);
             Bson update = Updates.inc("salario", extra);
-            pr.empleados().updateMany(filtro, update);
+            UpdateResult updated = provi.empleados().updateMany(filtro, update);
+            System.out.println(updated.getModifiedCount());
         } catch (Exception e) {
-            // TODO: handle exception
+            System.out.println(e.getMessage());
         }
     }
 
     public void findByDept(int depto){
-        try (MongoProvider provider = MongoProvider.getInstance()) {
+        try  {
             Bson filtro = Filters.eq("dep",depto);
-            FindIterable<Document> iter = provider.empleados().find(filtro);
+            FindIterable<Document> iter = provi.empleados().find(filtro);
 
             Iterator it = iter.iterator();
             while (it.hasNext()) {
                 System.out.println(it.next());
             }
         } catch (Exception e) {
-            // TODO: handle exception
+            System.out.println(e.getMessage());
         }
     }
 
     public void findByDep(int depto1, int depto2){
-        try (MongoProvider pro = new MongoProvider()) {
+        try  {
             Bson filtro = Filters.or(Filters.eq("dep",depto1),Filters.eq("dep",depto2));
-            FindIterable<Document> iter = pro.empleados().find(filtro);
+            FindIterable<Document> iter = provi.empleados().find(filtro);
 
             Iterator it = iter.iterator();
             while (it.hasNext()) {
                 System.out.println(it.next());
             }
         } catch (Exception e) {
-            // TODO: handle exception
+            System.out.println(e.getMessage());
         }
     }
 
     public void findSalaryHigherThanAndJob(int salario, String oficio){
-        try (MongoProvider pro = new MongoProvider()) {
+        try  {
             Bson filtro = Filters.and(Filters.gt("salario", salario),Filters.eq("oficio",oficio));
-            FindIterable<Document> iter = pro.empleados().find(filtro);
+            FindIterable<Document> iter = provi.empleados().find(filtro);
 
             Iterator it = iter.iterator();
             while (it.hasNext()) {
                 System.out.println(it.next());
             }
         } catch (Exception e) {
-            // TODO: handle exception
+            System.out.println(e.getMessage());
         }
     }
 
     public void updateComision(int cambio){
-        try (MongoProvider pr = new MongoProvider()) {
+        try {
             Bson filter = Filters.gt("comision", 0);
             Bson update = Updates.inc("comision", cambio);
-            pr.empleados().updateMany(filter, update);
+            UpdateResult resultUpdated = provi.empleados().updateMany(filter, update);
+            System.out.println(resultUpdated.getModifiedCount());
         } catch (Exception e) {
-            // TODO: handle exception
+            System.out.println(e.getMessage());
         }
     }
 
     public void salAvg(){
-        try (MongoProvider pr = new MongoProvider()) {
-            BasicDBObject groupField = new BasicDBObject("nombre");
-            BasicDBObject avg = new BasicDBObject("$avg", "$salario");
-            pr.empleados();
+        try {
+            
         } catch (Exception e) {
-            // TODO: handle exception
+            System.out.println(e.getMessage());
         }
+    }
+
+    public void numberOfEMployeesAvgSalMaxSalByDep(int dep){
+        try {
+            
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void higherSalEmpName(){
+        
     }
 }
