@@ -1,14 +1,21 @@
 package com.mongo1;
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
+import org.bson.BsonDocument;
+import org.bson.BsonString;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.BsonField;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
@@ -148,7 +155,13 @@ public class EmpleadoCRUD {
 
     public void salAvg(){
         try {
+            AggregateIterable<org.bson.Document> aggregate = provi.empleados()
+                .aggregate(Arrays.asList(Aggregates.group("_id", new BsonField("averageSal", new BsonDocument("$avg", new BsonString("$salario"))))));
+            Document result = aggregate.first();
+            double age = result.getDouble("averageSal");
+            System.out.println(age);
             
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -156,6 +169,9 @@ public class EmpleadoCRUD {
 
     public void numberOfEMployeesAvgSalMaxSalByDep(int dep){
         try {
+
+            Bson group = Aggregates.group("dep", null);
+            List<Document> some = Arrays.asList(Aggregates.group("dep", new BsonField()));
             
         } catch (Exception e) {
             System.out.println(e.getMessage());

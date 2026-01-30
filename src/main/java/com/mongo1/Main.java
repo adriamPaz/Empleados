@@ -23,8 +23,8 @@ public class Main {
         //crudpleado.findSalaryHigherThanAndJob(1300, "Profesora");
         //crudpleado.increaseOficioSalario(100, "Analista");
         //crudpleado.updateComision(-20);
-        crudpleado.salAvg();
-
+        //crudpleado.salAvg();
+        crudpleado.numberOfEMployeesAvgSalMaxSalByDep(10);
 
         //crudpleado.increaseEmpleadoSalario(juanito, 250);
 
