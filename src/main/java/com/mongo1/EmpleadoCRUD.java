@@ -1,5 +1,6 @@
 package com.mongo1;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -14,9 +15,11 @@ import com.mongodb.DBObject;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.BsonField;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertOneResult;
@@ -144,7 +147,7 @@ public class EmpleadoCRUD {
 
     public void updateComision(int cambio){
         try {
-            Bson filter = Filters.gt("comision", 0);
+            Bson filter = Filters.gte("comision", cambio);
             Bson update = Updates.inc("comision", cambio);
             UpdateResult resultUpdated = provi.empleados().updateMany(filter, update);
             System.out.println(resultUpdated.getModifiedCount());
@@ -168,10 +171,15 @@ public class EmpleadoCRUD {
     }
 
     public void numberOfEMployeesAvgSalMaxSalByDep(int dep){
+        List<Document> list = new ArrayList<>();
+        List<Bson> pipeline = List.of(
+                Aggregates.group("$dep", Accumulators.avg("salarioMedio", "$salario"),
+                Accumulators.max("salarioMaximo", "$salario")),
+                Aggregates.sort(Sorts.ascending("dep")));
+            
         try {
-
-            Bson group = Aggregates.group("dep", null);
-            List<Document> some = Arrays.asList(Aggregates.group("dep", new BsonField()));
+            provi.empleados().aggregate(pipeline).into(list);
+            
             
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -179,6 +187,7 @@ public class EmpleadoCRUD {
     }
 
     public void higherSalEmpName(){
+        BsonField filtrar = Accumulators.max("maxSal", "$salario");
         
     }
 }
